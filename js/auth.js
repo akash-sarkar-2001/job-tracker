@@ -14,15 +14,13 @@ const toastContainer = document.getElementById('toast-container');
 // ==========================================================================
 // Session Management (Check if already logged in)
 // ==========================================================================
-async function checkCurrentSession() {
-    const { data: { session }, error } = await supabase.auth.getSession();
+// Listen for the official auth state confirmation from Supabase
+supabase.auth.onAuthStateChange((event, session) => {
+    // If a verified session exists, push them to the dashboard
     if (session) {
-        // Operative already authenticated, redirect to dashboard
-        window.location.href = 'dashboard.html';
+        window.location.replace('dashboard.html');
     }
-}
-// Run check immediately on load
-checkCurrentSession();
+});
 
 // ==========================================================================
 // UI Interactions: Toggle Forms

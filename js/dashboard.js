@@ -18,20 +18,23 @@ let statusChartInstance = null;
 // ==========================================================================
 // Initialization & Authentication Guard
 // ==========================================================================
-document.addEventListener('DOMContentLoaded', async () => {
-    try {
-        const user = await getCurrentUser();
-        if (!user) {
-            window.location.href = 'index.html'; // Kick out unauthenticated users
+document.addEventListener('DOMContentLoaded', () => {
+    // Wait for Supabase to definitively confirm the session status
+    supabase.auth.onAuthStateChange(async (event, session) => {
+        if (!session) {
+            console.warn("No active clearance found. Redirecting to gateway.");
+            window.location.replace('index.html');
             return;
         }
 
-        document.getElementById('user-email').textContent = user.email;
-        await refreshDashboard();
-
-    } catch (error) {
-        showToast('System initialization failed: ' + error.message, 'error');
-    }
+        // Clearance verified. Initialize the dashboard.
+        try {
+            document.getElementById('user-email').textContent = session.user.email;
+            await refreshDashboard();
+        } catch (error) {
+            showToast('Databank synchronization failed: ' + error.message, 'error');
+        }
+    });
 });
 
 // ==========================================================================

@@ -4,9 +4,10 @@ import { supabase } from './config.js';
 // User Session Management
 // ==========================================================================
 export async function getCurrentUser() {
-    const { data: { user }, error } = await supabase.auth.getUser();
-    if (error || !user) return null;
-    return user;
+    // Rely on the local session to prevent API rate limits and redirect loops
+    const { data: { session }, error } = await supabase.auth.getSession();
+    if (error || !session) return null;
+    return session.user;
 }
 
 export async function logoutUser() {

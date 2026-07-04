@@ -1,0 +1,171 @@
+/* ==========================================================================
+   Base Theme Variables
+   ========================================================================== */
+:root {
+    /* Cybersecurity Theme Colors */
+    --bg-main: #060b13;
+    --bg-panel: rgba(13, 20, 36, 0.6);
+    --neon-blue: #00e5ff;
+    --neon-purple: #b026ff;
+    --cyan-glow: rgba(0, 229, 255, 0.4);
+    --purple-glow: rgba(176, 38, 255, 0.4);
+    --danger: #ff3366;
+    --success: #00ff9d;
+    --warning: #ffb800;
+
+    /* Text Colors */
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+
+    /* Glassmorphism */
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-bg: rgba(13, 22, 38, 0.5);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+
+    /* Fonts */
+    --font-ui: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    /* Layout */
+    --border-radius: 12px;
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   Global Resets & Typography
+   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+a {
+    color: var(--neon-blue);
+    text-decoration: none;
+    transition: var(--transition-smooth);
+}
+
+a:hover {
+    color: var(--text-primary);
+    text-shadow: 0 0 8px var(--cyan-glow);
+}
+
+/* ==========================================================================
+   Background Effects (Cyber Grid & Orbs)
+   ========================================================================== */
+.cyber-grid {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image:
+        linear-gradient(var(--glass-border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--glass-border) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: -2;
+    opacity: 0.2;
+    perspective: 1000px;
+}
+
+.glow-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    z-index: -1;
+    opacity: 0.45;
+    pointer-events: none;
+}
+
+.purple-orb {
+    width: 40vw;
+    height: 40vw;
+    max-width: 500px;
+    max-height: 500px;
+    background: var(--neon-purple);
+    top: -10%;
+    right: -10%;
+}
+
+.cyan-orb {
+    width: 35vw;
+    height: 35vw;
+    max-width: 400px;
+    max-height: 400px;
+    background: var(--neon-blue);
+    bottom: -5%;
+    left: -5%;
+}
+
+/* ==========================================================================
+   Reusable Components
+   ========================================================================== */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius);
+    box-shadow: var(--glass-shadow);
+}
+
+/* Auth Gateway Specific Layout (Used in index.html) */
+.auth-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 440px;
+    padding: 20px;
+    z-index: 10;
+}
+
+.auth-box {
+    padding: 2.5rem;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.logo-text {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.neon-text {
+    color: var(--neon-blue);
+    text-shadow: 0 0 12px var(--cyan-glow);
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}

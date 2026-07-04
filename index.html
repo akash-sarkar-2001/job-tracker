@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Gateway | Application Tracker</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/forms.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+
+<body class="auth-body">
+
+    <div class="cyber-grid"></div>
+    <div class="glow-orb purple-orb"></div>
+    <div class="glow-orb cyan-orb"></div>
+
+    <div class="auth-container">
+        <div class="glass-card auth-box">
+
+            <div class="auth-header">
+                <h1 class="logo-text">App<span class="neon-text">Tracker</span></h1>
+                <p class="subtitle">Establish Secure Connection</p>
+            </div>
+
+            <form id="login-form" class="auth-form active-form">
+                <div class="input-group">
+                    <label for="login-email">Email Address</label>
+                    <input type="email" id="login-email" placeholder="user@domain.com" required autocomplete="email">
+                </div>
+
+                <div class="input-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="••••••••" required
+                        autocomplete="current-password">
+                </div>
+
+                <div class="form-actions">
+                    <a href="#" id="forgot-password-link" class="text-link">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn primary-btn neon-btn" id="login-btn">
+                    <span class="btn-text">Authenticate</span>
+                    <span class="loader hidden"></span>
+                </button>
+
+                <p class="toggle-text">
+                    No active clearance? <a href="#" id="show-register">Request Access</a>
+                </p>
+            </form>
+
+            <form id="register-form" class="auth-form hidden-form">
+                <div class="input-group">
+                    <label for="register-email">Email Address</label>
+                    <input type="email" id="register-email" placeholder="user@domain.com" required autocomplete="email">
+                </div>
+
+                <div class="input-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" placeholder="Min. 8 characters" required minlength="8"
+                        autocomplete="new-password">
+                </div>
+
+                <div class="input-group">
+                    <label for="register-confirm">Confirm Password</label>
+                    <input type="password" id="register-confirm" placeholder="Verify password" required minlength="8"
+                        autocomplete="new-password">
+                </div>
+
+                <button type="submit" class="btn primary-btn neon-btn" id="register-btn">
+                    <span class="btn-text">Initialize Clearance</span>
+                    <span class="loader hidden"></span>
+                </button>
+
+                <p class="toggle-text">
+                    Existing operative? <a href="#" id="show-login">Authenticate Here</a>
+                </p>
+            </form>
+
+            <div id="toast-container"></div>
+        </div>
+    </div>
+
+    <script type="module" src="js/config.js"></script>
+    <script type="module" src="js/auth.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Application Tracker</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/forms.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body>
+
+    <div class="cyber-grid"></div>
+    <div class="glow-orb purple-orb"></div>
+    <div class="glow-orb cyan-orb"></div>
+
+    <nav class="top-nav glass-card">
+        <div class="nav-brand">
+            <i class="ph ph-shield-check neon-text"></i>
+            <h2>App<span class="neon-text">Tracker</span></h2>
+        </div>
+        <div class="nav-actions">
+            <span id="user-email" class="user-badge"></span>
+            <button id="logout-btn" class="btn icon-btn"><i class="ph ph-sign-out"></i> Disconnect</button>
+        </div>
+    </nav>
+
+    <main class="dashboard-container">
+
+        <header class="dash-header">
+            <div>
+                <h1>Mission Control</h1>
+                <p class="subtitle">Cybersecurity Internship & Job Applications</p>
+            </div>
+            <div class="header-buttons">
+                <button id="btn-export" class="btn secondary-btn"><i class="ph ph-download-simple"></i> Export
+                    Data</button>
+                <button id="btn-add-job" class="btn primary-btn neon-btn"><i class="ph ph-plus"></i> New Target</button>
+            </div>
+        </header>
+
+        <section class="stats-grid">
+            <div class="stat-card glass-card">
+                <div class="stat-icon"><i class="ph ph-files"></i></div>
+                <div class="stat-data">
+                    <h3>Total</h3>
+                    <p id="stat-total">0</p>
+                </div>
+            </div>
+            <div class="stat-card glass-card">
+                <div class="stat-icon warning"><i class="ph ph-paper-plane-tilt"></i></div>
+                <div class="stat-data">
+                    <h3>Applied</h3>
+                    <p id="stat-applied">0</p>
+                </div>
+            </div>
+            <div class="stat-card glass-card">
+                <div class="stat-icon info"><i class="ph ph-code"></i></div>
+                <div class="stat-data">
+                    <h3>Assessment</h3>
+                    <p id="stat-assessment">0</p>
+                </div>
+            </div>
+            <div class="stat-card glass-card">
+                <div class="stat-icon purple"><i class="ph ph-users"></i></div>
+                <div class="stat-data">
+                    <h3>Interview</h3>
+                    <p id="stat-interview">0</p>
+                </div>
+            </div>
+            <div class="stat-card glass-card">
+                <div class="stat-icon success"><i class="ph ph-check-circle"></i></div>
+                <div class="stat-data">
+                    <h3>Offer</h3>
+                    <p id="stat-offer">0</p>
+                </div>
+            </div>
+            <div class="stat-card glass-card">
+                <div class="stat-icon danger"><i class="ph ph-x-circle"></i></div>
+                <div class="stat-data">
+                    <h3>Rejected/Ghosted</h3>
+                    <p id="stat-rejected">0</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="charts-section glass-card">
+            <div class="chart-container">
+                <canvas id="statusChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="timelineChart"></canvas>
+            </div>
+        </section>
+
+        <section class="data-controls glass-card">
+            <div class="search-box">
+                <i class="ph ph-magnifying-glass"></i>
+                <input type="text" id="search-input" placeholder="Search targets by company, role, or portal...">
+            </div>
+            <div class="filters">
+                <select id="filter-status">
+                    <option value="All">All Statuses</option>
+                    <option value="Applied">Applied</option>
+                    <option value="Assessment">Assessment</option>
+                    <option value="Interview">Interview</option>
+                    <option value="Offer">Offer</option>
+                    <option value="Rejected">Rejected</option>
+                    <option value="Ghosted">Ghosted</option>
+                </select>
+                <select id="sort-data">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="company-asc">Company (A-Z)</option>
+                    <option value="company-desc">Company (Z-A)</option>
+                </select>
+            </div>
+        </section>
+
+        <section class="table-container glass-card">
+            <table id="applications-table">
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Target Role</th>
+                        <th>Portal</th>
+                        <th>Applied Date</th>
+                        <th>Status</th>
+                        <th>Resume</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <tr>
+                        <td colspan="7" class="text-center loading-text">Decrypting databank...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <div id="job-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h2 id="modal-title">Initialize New Target</h2>
+                <button class="close-modal"><i class="ph ph-x"></i></button>
+            </div>
+            <form id="job-form" class="grid-form">
+                <input type="hidden" id="job-id">
+
+                <div class="input-group">
+                    <label>Company Name *</label>
+                    <input type="text" id="job-company" required>
+                </div>
+                <div class="input-group">
+                    <label>Job Role *</label>
+                    <input type="text" id="job-role" required>
+                </div>
+                <div class="input-group">
+                    <label>Status</label>
+                    <select id="job-status">
+                        <option value="Applied">Applied</option>
+                        <option value="Assessment">Assessment</option>
+                        <option value="Interview">Interview</option>
+                        <option value="Offer">Offer</option>
+                        <option value="Rejected">Rejected</option>
+                        <option value="Ghosted">Ghosted</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Date Applied</label>
+                    <input type="date" id="job-date">
+                </div>
+                <div class="input-group">
+                    <label>Job Portal (e.g., LinkedIn, Direct)</label>
+                    <input type="text" id="job-portal">
+                </div>
+                <div class="input-group">
+                    <label>Location (Remote/City)</label>
+                    <input type="text" id="job-location">
+                </div>
+                <div class="input-group full-width">
+                    <label>Job Link</label>
+                    <input type="url" id="job-link" placeholder="https://...">
+                </div>
+                <div class="input-group full-width">
+                    <label>Notes / Intel</label>
+                    <textarea id="job-notes" rows="3"
+                        placeholder="Interviewer names, specific tech stack, etc."></textarea>
+                </div>
+
+                <div class="form-actions full-width">
+                    <button type="button" class="btn secondary-btn close-modal">Abort</button>
+                    <button type="submit" class="btn primary-btn neon-btn">Save Target</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="resume-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-card min-modal">
+            <div class="modal-header">
+                <h2>Upload Tailored Resume</h2>
+                <button class="close-modal"><i class="ph ph-x"></i></button>
+            </div>
+            <div class="upload-zone" id="drop-zone">
+                <i class="ph ph-upload-simple upload-icon"></i>
+                <p>Drag & drop or click to select</p>
+                <span class="file-limits">PDF, DOC, DOCX (Max 10MB)</span>
+                <input type="file" id="resume-file" accept=".pdf,.doc,.docx" hidden>
+            </div>
+            <div id="upload-progress" class="hidden">
+                <p class="upload-status-text">Uploading to secure storage...</p>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+            <input type="hidden" id="resume-job-id">
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script type="module" src="js/dashboard.js"></script>
+</body>
+
+</html>

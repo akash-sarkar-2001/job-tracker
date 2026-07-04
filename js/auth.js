@@ -14,10 +14,11 @@ const toastContainer = document.getElementById('toast-container');
 // ==========================================================================
 // Session Management (Check if already logged in)
 // ==========================================================================
-// Listen for the official auth state confirmation from Supabase
+// Only redirect on an explicit SIGNED_IN event — never on a raw session check.
+// This prevents the loop caused by onAuthStateChange firing on page load
+// when a session already exists in localStorage.
 supabase.auth.onAuthStateChange((event, session) => {
-    // If a verified session exists, push them to the dashboard
-    if (session) {
+    if (event === 'SIGNED_IN') {
         window.location.replace('dashboard.html');
     }
 });
@@ -134,9 +135,8 @@ loginForm.addEventListener('submit', async (e) => {
     if (error) {
         showToast('Authentication failed: ' + error.message, 'error');
     } else {
+        // Do NOT manually redirect here. The onAuthStateChange listener above
+        // will fire with event === 'SIGNED_IN' and handle the redirect cleanly.
         showToast('Clearance granted. Redirecting...', 'success');
-        setTimeout(() => {
-            window.location.href = 'dashboard.html';
-        }, 1000);
     }
 });

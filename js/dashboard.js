@@ -1,5 +1,6 @@
+import { supabase } from './config.js';
 import {
-    getCurrentUser, logoutUser, fetchApplications, saveApplication,
+    logoutUser, fetchApplications, saveApplication,
     deleteApplication, uploadResumeFile, getResumeUrl
 } from './supabase.js';
 import {
@@ -18,21 +19,34 @@ let statusChartInstance = null;
 // ==========================================================================
 // Initialization & Authentication Guard
 // ==========================================================================
-document.addEventListener('DOMContentLoaded', () => {
-    // Wait for Supabase to definitively confirm the session status
-    supabase.auth.onAuthStateChange(async (event, session) => {
-        if (!session) {
-            console.warn("No active clearance found. Redirecting to gateway.");
-            window.location.replace('index.html');
-            return;
-        }
+// Strategy: Use getSession() for the INITIAL check (reads localStorage instantly,
+// no network call, no race condition). Then subscribe to onAuthStateChange ONLY
+// to detect a SIGNED_OUT event so we can redirect on logout.
+document.addEventListener('DOMContentLoaded', async () => {
+    // Step 1: Synchronous initial check. Fast, no server ping.
+    const { data: { session }, error } = await supabase.auth.getSession();
 
-        // Clearance verified. Initialize the dashboard.
-        try {
-            document.getElementById('user-email').textContent = session.user.email;
-            await refreshDashboard();
-        } catch (error) {
-            showToast('Databank synchronization failed: ' + error.message, 'error');
+    if (!session) {
+        // No session in localStorage at all — send to login immediately.
+        console.warn("No active clearance found. Redirecting to gateway.");
+        window.location.replace('index.html');
+        return; // Stop all further execution on this page.
+    }
+
+    // Step 2: Session confirmed. Populate UI and load data.
+    try {
+        document.getElementById('user-email').textContent = session.user.email;
+        await refreshDashboard();
+    } catch (error) {
+        showToast('Databank synchronization failed: ' + error.message, 'error');
+    }
+
+    // Step 3: Now subscribe ONLY to watch for logout. We use the event type
+    // so we never accidentally redirect due to a token-refresh firing with a
+    // brief null session in between.
+    supabase.auth.onAuthStateChange((event) => {
+        if (event === 'SIGNED_OUT') {
+            window.location.replace('index.html');
         }
     });
 });

@@ -10,6 +10,9 @@ import {
 import { debounce } from './utils.js';
 import { showToast } from './auth.js'; // Reusing toast logic
 
+// Works on both Live Server (localhost) and GitHub Pages (/job-tracker/)
+const BASE_PATH = window.location.pathname.replace(/\/[^\/]*$/, '/') || '/';
+
 // ==========================================================================
 // Global State
 // ==========================================================================
@@ -29,7 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!session) {
         // No session in localStorage at all — send to login immediately.
         console.warn("No active clearance found. Redirecting to gateway.");
-        window.location.replace('index.html');
+        window.location.replace(BASE_PATH + 'index.html');
         return; // Stop all further execution on this page.
     }
 
@@ -46,7 +49,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // brief null session in between.
     supabase.auth.onAuthStateChange((event) => {
         if (event === 'SIGNED_OUT') {
-            window.location.replace('index.html');
+            window.location.replace(BASE_PATH + 'index.html');
         }
     });
 });

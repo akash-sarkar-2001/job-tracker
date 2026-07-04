@@ -1,5 +1,8 @@
 import { supabase } from './config.js';
 
+// Works on both Live Server (localhost) and GitHub Pages (/job-tracker/)
+const BASE_PATH = window.location.pathname.replace(/\/[^\/]*$/, '/') || '/';
+
 // ==========================================================================
 // DOM Elements
 // ==========================================================================
@@ -19,7 +22,7 @@ const toastContainer = document.getElementById('toast-container');
 // when a session already exists in localStorage.
 supabase.auth.onAuthStateChange((event, session) => {
     if (event === 'SIGNED_IN') {
-        window.location.replace('dashboard.html');
+        window.location.replace(BASE_PATH + 'dashboard.html');
     }
 });
 
